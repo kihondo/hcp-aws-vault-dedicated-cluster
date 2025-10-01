@@ -129,7 +129,7 @@ export TF_VAR_tier="standard_small"
 ### Initial Deployment
 ```bash
 # 1. Clone and navigate to project
-cd hcp-vault-sep2025
+cd hcp-aws-vault-dedicated-cluster
 
 # 2. Initialize Terraform
 terraform init
@@ -151,19 +151,6 @@ terraform plan
 terraform apply
 ```
 
-### Configuration Validation
-```bash
-# Verify Terraform syntax
-terraform validate
-
-# Check formatting compliance
-terraform fmt -check
-
-# Security scan (if using external tools)
-# tfsec .
-# checkov -f main.tf
-```
-
 ### Post-Deployment Verification
 ```bash
 # Retrieve cluster information
@@ -175,177 +162,6 @@ export VAULT_ADDR=$(terraform output -raw vault_public_endpoint)
 export VAULT_NAMESPACE=$(terraform output -raw vault_namespace)
 vault status
 ```
-
-## Operations Guide
-
-### Day 1 Operations (Initial Setup)
-
-#### 1. Authentication Configuration
-```bash
-# Configure initial admin access
-export VAULT_TOKEN=$(terraform output -raw vault_admin_token)
-
-# Enable authentication methods
-vault auth enable userpass
-vault auth enable ldap
-vault auth enable oidc
-```
-
-#### 2. Policy Framework
-```bash
-# Create base policies
-vault policy write admin-policy - <<EOF
-path "*" {
-  capabilities = ["create", "read", "update", "delete", "list", "sudo"]
-}
-EOF
-
-vault policy write developer-policy - <<EOF
-path "secret/data/dev/*" {
-  capabilities = ["create", "read", "update", "delete", "list"]
-}
-EOF
-```
-
-#### 3. Secrets Engine Configuration
-```bash
-# Enable KV v2 secrets engine
-vault secrets enable -path=secret kv-v2
-
-# Enable database secrets engine
-vault secrets enable database
-
-# Enable PKI for certificate management
-vault secrets enable pki
-vault secrets tune -max-lease-ttl=87600h pki
-```
-
-### Day 2+ Operations (Ongoing Management)
-
-#### Monitoring and Alerting
-- **Native Monitoring**: HCP provides built-in metrics and alerting
-- **External Integration**: Configure with Datadog, Splunk, or Grafana
-- **Health Checks**: Automated cluster health monitoring
-
-#### Backup and Recovery
-- **Automated Snapshots**: Managed by HCP infrastructure
-- **Point-in-Time Recovery**: Available through HCP console
-- **Disaster Recovery**: Cross-region replication available
-
-#### Security Operations
-```bash
-# Regular security tasks
-vault audit enable file file_path=/vault/logs/audit.log
-
-# Token lifecycle management
-vault token create -policy=developer-policy -ttl=8h
-
-# Secret rotation workflows
-vault write database/rotate-root/my-database
-```
-
-## Security Considerations
-
-### Network Security
-- **Private Endpoints**: Recommended for production workloads
-- **CIDR Planning**: Avoid conflicts with existing network ranges
-- **Firewall Rules**: Implement appropriate access controls
-
-### Access Control
-- **Principle of Least Privilege**: Grant minimum required permissions
-- **Regular Access Reviews**: Quarterly policy and access audits
-- **Multi-Factor Authentication**: Enable for all human users
-
-### Compliance Framework
-- **SOC 2 Type II**: Built-in compliance for HCP infrastructure
-- **HIPAA**: Available with appropriate configuration
-- **PCI DSS**: Supported for payment card data protection
-- **FedRAMP**: Available in select regions
-
-## Troubleshooting Guide
-
-### Common Issues
-
-#### Authentication Failures
-```bash
-# Verify credentials
-env | grep HCP_
-
-# Test API connectivity
-curl -H "Authorization: Bearer $HCP_CLIENT_SECRET" \
-  https://api.cloud.hashicorp.com/2019-12-10/projects
-```
-
-#### Network Connectivity
-```bash
-# Verify HVN status
-terraform refresh
-terraform show | grep -A 10 hcp_hvn
-
-# Test cluster accessibility
-nc -zv <vault-endpoint> 8200
-```
-
-#### Resource Limits
-- **HCP Quotas**: Check organization resource limits
-- **Regional Availability**: Verify service availability in target region
-- **Tier Limitations**: Ensure selected tier meets requirements
-
-### Support Escalation
-1. **Internal Documentation**: Check runbooks and procedures
-2. **HashiCorp Support**: Submit ticket through HCP console
-3. **Professional Services**: Engage for complex implementations
-4. **Community Resources**: HashiCorp Learn and forums
-
-## Cost Optimization
-
-### Resource Right-Sizing
-- **Development**: Use `dev` tier for non-production
-- **Production**: Start with `starter_small` and scale as needed
-- **Monitoring**: Regular usage analysis and tier optimization
-
-### Cost Management
-- **Resource Tagging**: Implement consistent tagging strategy
-- **Budget Alerts**: Configure spending notifications
-- **Regular Reviews**: Monthly cost and usage analysis
-
-## Maintenance Procedures
-
-### Upgrade Management
-- **Automatic Updates**: Managed by HCP platform
-- **Maintenance Windows**: Configure during low-usage periods
-- **Change Management**: Follow organizational change control processes
-
-### Regular Maintenance Tasks
-- [ ] Monthly security patching (automated)
-- [ ] Quarterly access review
-- [ ] Semi-annual disaster recovery testing
-- [ ] Annual compliance audit
-
-## Implementation Checklist
-
-### Pre-Deployment
-- [ ] HCP account and project setup
-- [ ] Service principal creation and testing
-- [ ] Network architecture review
-- [ ] Security policy approval
-- [ ] Change management approval
-
-### Deployment
-- [ ] Terraform code review
-- [ ] Security scan completion
-- [ ] Deployment testing in non-production
-- [ ] Production deployment
-- [ ] Post-deployment verification
-
-### Post-Deployment
-- [ ] Authentication method configuration
-- [ ] Policy framework implementation
-- [ ] Secrets engine setup
-- [ ] Monitoring and alerting configuration
-- [ ] Documentation update
-- [ ] Team training and handover
-
 ---
 **Document Version**: 1.0  
 **Last Updated**: September 2025  
