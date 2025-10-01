@@ -70,8 +70,7 @@ This Terraform configuration provisions a production-ready HashiCorp Vault clust
 # Navigate: HCP Console → Access Control (IAM) → Service Principals
 
 # Required permissions:
-# - HCP Vault: Contributor or Admin
-# - HCP HVN: Contributor or Admin
+# Contributor or Admin
 ```
 
 ## Configuration Management
