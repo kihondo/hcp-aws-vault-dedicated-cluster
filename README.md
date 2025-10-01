@@ -154,11 +154,10 @@ terraform apply
 ### Post-Deployment Verification
 ```bash
 # Retrieve cluster information
-terraform output vault_public_endpoint
-terraform output vault_namespace
+terraform output vault_cli_commands
 
 # Verify cluster accessibility
-export VAULT_ADDR=$(terraform output -raw vault_public_endpoint)
+export VAULT_ADDR=$(terraform output -raw vault_public_endpoint_url)
 export VAULT_NAMESPACE=$(terraform output -raw vault_namespace)
 vault status
 ```
