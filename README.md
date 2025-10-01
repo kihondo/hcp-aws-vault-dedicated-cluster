@@ -113,16 +113,8 @@ export TF_VAR_tier="standard_small"
 
 ### Tier Selection Guide
 
-| Tier | Use Case | Features | Recommended For |
-|------|----------|----------|-----------------|
-| `dev` | Development/Testing | Basic functionality | Non-production environments |
-| `starter_small` | Small Production | Dedicated infrastructure | Small-scale production |
-| `standard_small` | Production | Enhanced performance | Medium-scale production |
-| `standard_medium` | Production | Higher throughput | Large-scale production |
-| `standard_large` | Enterprise | Maximum performance | High-volume enterprise |
-| `plus_small` | Compliance | Advanced features | Regulated industries |
-| `plus_medium` | Enterprise Compliance | Full feature set | Large regulated workloads |
-| `plus_large` | Enterprise Scale | Maximum capabilities | Enterprise-wide deployment |
+* HCP Vault Dedicated tiers and features(https://developer.hashicorp.com/hcp/docs/vault/get-started/deployment-considerations/tiers-and-features)
+
 
 ## Deployment Procedures
 
