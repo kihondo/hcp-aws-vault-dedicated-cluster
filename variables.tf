@@ -62,14 +62,14 @@ variable "cluster_id" {
   default     = "aws-hcp-vault-cluster"
 }
 
+# https://github.com/hashicorp/terraform-provider-hcp/blob/main/internal/providersdkv2/resource_vault_cluster.go#L79
 variable "tier" {
-  description = "Tier of the HCP Vault cluster. Valid options for tiers"
+  description = "Tier of the HCP Vault cluster. Valid options for tiers (starter_small is deprecated)"
   type        = string
   default     = "dev"
   validation {
     condition = contains([
       "dev",
-      "starter_small",
       "standard_small",
       "standard_medium",
       "standard_large",
@@ -77,7 +77,7 @@ variable "tier" {
       "plus_medium",
       "plus_large"
     ], var.tier)
-    error_message = "Tier must be one of: dev, starter_small, standard_small, standard_medium, standard_large, plus_small, plus_medium, plus_large."
+    error_message = "Tier must be one of: dev, standard_small, standard_medium, standard_large, plus_small, plus_medium, plus_large. Note: starter_small is deprecated."
   }
 }
 
